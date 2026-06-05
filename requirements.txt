@@ -1,0 +1,10 @@
+langgraph>=0.3.0
+langchain-core>=0.3.60
+langchain-ollama>=0.3.3
+langchain-chroma>=0.2.4
+langchain-text-splitters>=0.3.8
+chromadb>=1.0.9
+streamlit>=1.45.0
+python-dotenv>=1.1.0
+langgraph-checkpoint-sqlite>=3.0.0
+wikipedia>=1.4.0
