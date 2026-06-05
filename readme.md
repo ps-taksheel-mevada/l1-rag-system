@@ -1,71 +1,114 @@
-<h1>Build a local RAG with Ollama</h1>
+# RAG Agent CLI
 
-<h2>Watch the full tutorial on my YouTube Channel</h2>
-<div>
+A local Retrieval-Augmented Generation (RAG) agent powered by LangGraph and Ollama.
 
-<a href="https://youtu.be/c5jHhMXmXyo">
-    <img src="thumbnail_small.png" alt="Thomas Janssen Youtube" width="200"/>
-</a>
-</div>
+## Prerequisites
 
-<h2>Prerequisites</h2>
-<ul>
-  <li>Python 3.11+</li>
-</ul>
+- Python 3.13+
+- [Ollama](https://ollama.com) installed and running
 
-<h2>Installation</h2>
-<h3>1. Clone the repository:</h3>
+Pull the required models:
 
 ```
-git clone https://github.com/ThomasJanssen-tech/Local-RAG-with-Ollama
-cd Local-RAG-With-Ollama
+ollama pull llama3.2:latest
+ollama pull mxbai-embed-large:latest
 ```
 
-<h3>2. Create a virtual environment</h3>
+## Installation
 
 ```
-python -m venv venv
-```
-
-<h3>3. Activate the virtual environment</h3>
-
-```
-venv\Scripts\Activate
-(or on Mac): source venv/bin/activate
-```
-
-<h3>4. Install libraries</h3>
-
-```
+git clone https://github.com/ps-taksheel-mevada/l1-rag-system
+cd l1-rag-system
+python -m venv .venv
+.venv\Scripts\activate   # Windows
+# source .venv/bin/activate  # macOS/Linux
 pip install -r requirements.txt
 ```
 
-<h3>5. Add Bright Data API Key</h3>
-<ul>
-<li>Get your $15 Bright Data credits: https://brdta.com/tomstechacademy</li>
-<li>Rename the .env.example file to .env</li>
-<li>Add your Bright Data API key</li>
-<li><i>If you want to use ChatGPT or Anthropic models, add an API key (not required for Ollama)</i></li>
-</ul>
-
-<h2>Executing the scripts</h2>
-
-- Open a terminal in VS Code
-
-- Execute the following command:
+Copy `.env.example` to `.env` and configure if needed:
 
 ```
-python run 1_scraping_wikipedia.py
-python run 2_chunking_embedding_ingestion.py
-streamlit run 3_chatbot.py
+cp .env.example .env
 ```
 
-<h2>Further reading</h2>
-<ul>
-<li>https://www.ibm.com/think/topics/vector-embedding</li>
-<li>https://ollama.com/blog/embedding-models</li>
-<li>https://python.langchain.com/docs/integrations/vectorstores/chroma/</li>
-<li>https://python.langchain.com/docs/integrations/text_embedding/ollama/</li>
-<li>https://ollama.com/library/mxbai-embed-large</li>
-<li>https://ollama.com/library/qwen3</li>
-</ul>
+## CLI Usage
+
+### Interactive Mode
+
+```
+python cli.py
+```
+
+### Commands
+
+| Command                  | Description                                    |
+|--------------------------|------------------------------------------------|
+| `/help`                  | Show all available commands                    |
+| `/quit`                  | Exit the chat                                  |
+| `/clear`                 | Start a new conversation                       |
+| `/ingest PATH`           | Ingest a `.txt` or `.jsonl` file               |
+| `/wiki KEYWORD [N]`      | Fetch & ingest N Wikipedia pages (default 3)   |
+| `/reset-db`              | Delete and recreate the vector store           |
+| `/model NAME`            | Switch chat model (e.g. `/model gemma3:4b`)    |
+
+### Non-interactive Mode
+
+Ingest a file before starting:
+
+```
+python cli.py --ingest data.txt
+```
+
+Run a single query and exit:
+
+```
+python cli.py --query "What is retrieval augmented generation?"
+```
+
+Fetch Wikipedia pages and query:
+
+```
+python cli.py --wiki "machine learning" --wiki-pages 5
+```
+
+Clear vector store, fetch Wikipedia, and query:
+
+```
+python cli.py --wiki "deep learning" --wiki-clear --query "Explain deep learning"
+```
+
+Disable streaming output:
+
+```
+python cli.py --query "Hello" --no-stream
+```
+
+Use a specific model:
+
+```
+python cli.py --model gemma3:4b
+```
+
+### CLI Arguments
+
+| Argument         | Description                                    |
+|------------------|------------------------------------------------|
+| `--ingest PATH`  | Ingest a `.txt` or `.jsonl` file               |
+| `--reset-db`     | Clear the vector store before starting         |
+| `--model NAME`   | Chat model to use (default: `llama3.2:latest`) |
+| `--query TEXT`   | Run a single query and exit (non-interactive)  |
+| `--no-stream`    | Disable streaming output                       |
+| `--wiki KEYWORD` | Fetch Wikipedia pages and ingest               |
+| `--wiki-pages N` | Number of Wikipedia pages to fetch (default: 3)|
+| `--wiki-clear`   | Clear vector store before Wikipedia fetch      |
+
+## Environment Variables
+
+| Variable              | Default                    | Description            |
+|-----------------------|----------------------------|------------------------|
+| `EMBEDDING_MODEL`     | `mxbai-embed-large:latest` | Ollama embedding model |
+| `CHAT_MODEL`          | `llama3.2:latest`          | Ollama chat model      |
+| `DATABASE_LOCATION`   | `chroma_db`                | Vector store directory |
+| `COLLECTION_NAME`     | `rag_data`                 | ChromaDB collection    |
+| `CHECKPOINT_DB`       | `checkpoints.db`           | SQLite checkpoint DB   |
+| `DATASET_STORAGE_FOLDER` | `datasets/`             | Dataset storage folder |
