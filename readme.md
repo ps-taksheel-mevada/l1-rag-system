@@ -19,6 +19,17 @@ ollama pull mxbai-embed-large:latest
 ```
 git clone https://github.com/ps-taksheel-mevada/l1-rag-system
 cd l1-rag-system
+```
+
+### Using uv (recommended)
+
+```
+uv sync
+```
+
+### Using pip
+
+```
 python -m venv .venv
 .venv\Scripts\activate   # Windows
 # source .venv/bin/activate  # macOS/Linux
@@ -32,6 +43,8 @@ cp .env.example .env
 ```
 
 ## CLI Usage
+
+> If using uv, prefix commands with `uv run` (e.g. `uv run python cli.py`).
 
 ### Interactive Mode
 
